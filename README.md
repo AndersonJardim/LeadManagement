@@ -1,12 +1,11 @@
-# Título do README.md 
- 
-Este é um texto de exemplo. 
-Mais linhas serão adicionar conforme necessário. 
- 
-Salvo com sucesso! 
- 
-# Alguns comandos 
-```bash 
-dotnet new console 
-``` 
- 
+# Título do README.md
+
+Estou criando um controle de gerenciamento de Lead - Lead Management.
+Um webapi .net.
+
+# Alguns comandos
+
+```bash
+dotnet new webapi -n LeadManagementApi
+cd LeadManagementApi
+```
