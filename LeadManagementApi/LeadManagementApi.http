@@ -1,6 +1,92 @@
-@LeadManagementApi_HostAddress = http://localhost:5184
+### Variável de ambiente para o endereço da API
+@LeadManagementApi_HostAddress = https://localhost:7080
 
-GET {{LeadManagementApi_HostAddress}}/weatherforecast/
+### GET todos os Leads
+GET {{LeadManagementApi_HostAddress}}/api/leads
 Accept: application/json
 
-###
+### GET um Lead por ID (substitua o GUID pelo ID de um Lead existente)
+GET {{LeadManagementApi_HostAddress}}/api/leads/c92eb80f-c461-4378-9bf0-0ab29e30a2d0
+Accept: application/json
+
+### POST para Criar um novo Lead - Exemplo 1: Lead de Serviço de Encanamento
+POST {{LeadManagementApi_HostAddress}}/api/leads
+Content-Type: application/json
+Accept: application/json
+
+{
+  "contactFirstName": "João",
+  "suburb": "Copacabana",
+  "category": "Encanamento",
+  "description": "Vazamento na cozinha, preciso de um encanador urgente.",
+  "price": 350.00
+}
+
+### POST para Criar um novo Lead - Exemplo 2: Lead de Reforma de Casa
+POST {{LeadManagementApi_HostAddress}}/api/leads
+Content-Type: application/json
+Accept: application/json
+
+{
+  "contactFirstName": "Maria",
+  "suburb": "Tijuca",
+  "category": "Reforma",
+  "description": "Orçamento para reforma completa de apartamento de 2 quartos.",
+  "price": 15000.00
+}
+
+### POST para Criar um novo Lead - Exemplo 3: Lead de Serviço de Jardinagem
+POST {{LeadManagementApi_HostAddress}}/api/leads
+Content-Type: application/json
+Accept: application/json
+
+{
+  "contactFirstName": "Pedro",
+  "suburb": "Barra da Tijuca",
+  "category": "Jardinagem",
+  "description": "Manutenção de jardim grande com corte de grama e poda de árvores.",
+  "price": 800.00
+}
+
+### POST para Criar um novo Lead - Exemplo 4: Lead de Aula Particular
+POST {{LeadManagementApi_HostAddress}}/api/leads
+Content-Type: application/json
+Accept: application/json
+
+{
+  "contactFirstName": "Ana",
+  "suburb": "Centro",
+  "category": "Educação",
+  "description": "Preciso de aulas particulares de matemática para o ensino médio.",
+  "price": 120.00
+}
+
+### POST para Criar um novo Lead - Exemplo 5: Lead de Desenvolvimento Web
+POST {{LeadManagementApi_HostAddress}}/api/leads
+Content-Type: application/json
+Accept: application/json
+
+{
+  "contactFirstName": "Carlos",
+  "suburb": "Botafogo",
+  "category": "Tecnologia",
+  "description": "Criação de um website para e-commerce de produtos artesanais.",
+  "price": 7500.00
+}
+
+### PUT para Atualizar um Lead existente (substitua o GUID pelo ID de um Lead existente e ajuste os campos)
+PUT {{LeadManagementApi_HostAddress}}/api/leads/cd5deffa-6fa4-480b-9b34-5da446d0776f
+Content-Type: application/json
+Accept: application/json
+
+{
+  "contactFirstName": "João Silva",
+  "suburb": "Copacabana",
+  "category": "Encanamento",
+  "description": "Vazamento na pia da cozinha, preferência de contato por telefone.",
+  "price": 400.00
+}
+
+### DELETE um Lead (substitua o GUID pelo ID de um Lead existente)
+DELETE {{LeadManagementApi_HostAddress}}/api/leads/3fe03f3b-08d6-48d4-904a-d9d62c95ffe5
+Accept: */*
