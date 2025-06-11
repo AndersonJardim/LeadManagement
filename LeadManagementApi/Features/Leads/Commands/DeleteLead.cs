@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using LeadManagementApi.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +25,7 @@ namespace LeadManagementApi.Features.Leads.Commands
             }
 
             _context.Leads.Remove(lead);
-            await _context.SaveChangesAsync(cancellationToken); // Salva as mudanças no DB
+            await _context.SaveChangesAsync(cancellationToken);
 
             return true;
         }

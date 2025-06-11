@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using LeadManagementApi.Data;
 using LeadManagementApi.Models;
 using MediatR;
@@ -10,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeadManagementApi.Features.Leads.Commands
 {
-    public record UpdateLeadCommand(Guid Id, string ContactFirstName, string Suburb, string Category, string Description, decimal Price) : IRequest<LeadResponse>;
+    public record UpdateLeadCommand(Guid Id, string ContactFirstName, string Suburb, string Category, string Description, decimal Price) : IRequest<LeadResponse?>;
 
-    public class UpdateLeadCommandHandler : IRequestHandler<UpdateLeadCommand, LeadResponse>
+    public class UpdateLeadCommandHandler : IRequestHandler<UpdateLeadCommand, LeadResponse?>
     {
         private readonly ApplicationDbContext _context;
 
@@ -21,7 +16,7 @@ namespace LeadManagementApi.Features.Leads.Commands
             _context = context;
         }
 
-        public async Task<LeadResponse> Handle(UpdateLeadCommand request, CancellationToken cancellationToken)
+        public async Task<LeadResponse?> Handle(UpdateLeadCommand request, CancellationToken cancellationToken)
         {
             var lead = await _context.Leads.FindAsync(new object[] { request.Id }, cancellationToken);
 
@@ -47,7 +42,11 @@ namespace LeadManagementApi.Features.Leads.Commands
                 Suburb = lead.Suburb,
                 Category = lead.Category,
                 Description = lead.Description,
-                Price = lead.Price
+                Price = lead.Price,
+                Status = lead.Status, // Mantenha o status existente
+                ContactFullName = lead.ContactFullName,
+                ContactPhoneNumber = lead.ContactPhoneNumber,
+                ContactEmail = lead.ContactEmail
             };
         }
     }

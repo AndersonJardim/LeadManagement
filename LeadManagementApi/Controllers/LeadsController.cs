@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using LeadManagementApi.Features.Leads.Commands;
 using LeadManagementApi.Features.Leads.Queries;
 using LeadManagementApi.Models;
@@ -57,12 +52,11 @@ namespace LeadManagementApi.Controllers
         /// </summary>
         /// <param name="request">Dados para criação do Lead.</param>
         /// <returns>O Lead recém-criado.</returns>
-        [HttpPost] // Mapeia para requisições POST em /api/leads
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<LeadResponse>> CreateLead([FromBody] CreateLeadRequest request)
         {
-            // Cria um comando a partir do DTO de requisição
             var command = new CreateLeadCommand(
                 request.ContactFirstName,
                 request.Suburb,
@@ -71,7 +65,6 @@ namespace LeadManagementApi.Controllers
                 request.Price
             );
             var leadResponse = await _mediator.Send(command);
-            // Retorna 201 Created com a localização do novo recurso
             return CreatedAtAction(nameof(GetLead), new { id = leadResponse.Id }, leadResponse);
         }
 
@@ -119,6 +112,42 @@ namespace LeadManagementApi.Controllers
                 return NotFound();
             }
             return NoContent();
+        }
+
+        /// <summary>
+        /// Aceita um Lead, aplicando desconto se necessário e notificando vendas.
+        /// </summary>
+        /// <param name="id">O ID do Lead a ser aceito.</param>
+        /// <returns>O Lead aceito ou NotFound.</returns>
+        [HttpPut("{id}/accept")] // NOVO endpoint para aceitar
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<LeadResponse>> AcceptLead(Guid id)
+        {
+            var leadResponse = await _mediator.Send(new AcceptLeadCommand(id));
+            if (leadResponse == null)
+            {
+                return NotFound();
+            }
+            return Ok(leadResponse);
+        }
+
+        /// <summary>
+        /// Recusa um Lead.
+        /// </summary>
+        /// <param name="id">O ID do Lead a ser recusado.</param>
+        /// <returns>O Lead recusado ou NotFound.</returns>
+        [HttpPut("{id}/decline")] // NOVO endpoint para recusar
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<LeadResponse>> DeclineLead(Guid id)
+        {
+            var leadResponse = await _mediator.Send(new DeclineLeadCommand(id));
+            if (leadResponse == null)
+            {
+                return NotFound();
+            }
+            return Ok(leadResponse);
         }
     }
 }

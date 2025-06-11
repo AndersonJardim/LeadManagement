@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using LeadManagementApi.Data;
 using LeadManagementApi.Models;
 using MediatR;
@@ -10,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeadManagementApi.Features.Leads.Queries
 {
-    public record GetLeadByIdQuery(Guid Id) : IRequest<LeadResponse>;
+    public record GetLeadByIdQuery(Guid Id) : IRequest<LeadResponse?>;
 
-    public class GetLeadByIdQueryHandler : IRequestHandler<GetLeadByIdQuery, LeadResponse>
+    public class GetLeadByIdQueryHandler : IRequestHandler<GetLeadByIdQuery, LeadResponse?>
     {
         private readonly ApplicationDbContext _context;
 
@@ -21,7 +16,7 @@ namespace LeadManagementApi.Features.Leads.Queries
             _context = context;
         }
 
-        public async Task<LeadResponse> Handle(GetLeadByIdQuery request, CancellationToken cancellationToken)
+        public async Task<LeadResponse?> Handle(GetLeadByIdQuery request, CancellationToken cancellationToken)
         {
             var lead = await _context.Leads.AsNoTracking()
                                      .FirstOrDefaultAsync(l => l.Id == request.Id, cancellationToken);
@@ -39,7 +34,11 @@ namespace LeadManagementApi.Features.Leads.Queries
                 Suburb = lead.Suburb,
                 Category = lead.Category,
                 Description = lead.Description,
-                Price = lead.Price
+                Price = lead.Price,
+                Status = lead.Status,
+                ContactFullName = lead.ContactFullName,
+                ContactPhoneNumber = lead.ContactPhoneNumber,
+                ContactEmail = lead.ContactEmail
             };
         }
     }
