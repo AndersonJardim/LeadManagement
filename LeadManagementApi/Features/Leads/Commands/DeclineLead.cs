@@ -1,22 +1,22 @@
-using LeadManagementApi.Data;
+﻿using LeadManagementApi.Data;
 using LeadManagementApi.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeadManagementApi.Features.Leads.Commands
 {
-    public record UpdateLeadCommand(Guid Id, string ContactFirstName, string Suburb, string Category, string Description, decimal Price) : IRequest<LeadResponse?>;
+    public record DeclineLeadCommand(Guid Id) : IRequest<LeadResponse?>;
 
-    public class UpdateLeadCommandHandler : IRequestHandler<UpdateLeadCommand, LeadResponse?>
+    public class DeclineLeadCommandHandler : IRequestHandler<DeclineLeadCommand, LeadResponse?>
     {
         private readonly ApplicationDbContext _context;
 
-        public UpdateLeadCommandHandler(ApplicationDbContext context)
+        public DeclineLeadCommandHandler(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<LeadResponse?> Handle(UpdateLeadCommand request, CancellationToken cancellationToken)
+        public async Task<LeadResponse?> Handle(DeclineLeadCommand request, CancellationToken cancellationToken)
         {
             var lead = await _context.Leads.FindAsync(new object[] { request.Id }, cancellationToken);
 
@@ -25,11 +25,25 @@ namespace LeadManagementApi.Features.Leads.Commands
                 return null;
             }
 
-            lead.ContactFirstName = request.ContactFirstName;
-            lead.Suburb = request.Suburb;
-            lead.Category = request.Category;
-            lead.Description = request.Description;
-            lead.Price = request.Price;
+            if (lead.Status == "Declined")
+            {
+                return new LeadResponse
+                {
+                    Id = lead.Id,
+                    ContactFirstName = lead.ContactFirstName,
+                    DateCreated = lead.DateCreated,
+                    Suburb = lead.Suburb,
+                    Category = lead.Category,
+                    Description = lead.Description,
+                    Price = lead.Price,
+                    Status = lead.Status,
+                    ContactFullName = lead.ContactFullName,
+                    ContactPhoneNumber = lead.ContactPhoneNumber,
+                    ContactEmail = lead.ContactEmail
+                };
+            }
+
+            lead.Status = "Declined";
 
             _context.Entry(lead).State = EntityState.Modified;
             await _context.SaveChangesAsync(cancellationToken);

@@ -113,3 +113,10 @@ docker run -d -p 7780:8080 --network leadmanagement-network --name leadmanagemen
 http://localhost:8080
 
 ```
+
+- Nova gerar de Migration
+
+```bash
+dotnet ef migrations add AddLeadStatusAndContactInfo
+dotnet ef database update
+```

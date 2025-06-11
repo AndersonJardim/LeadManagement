@@ -87,6 +87,42 @@ Accept: application/json
   "price": 400.00
 }
 
+
+
+
+### PUT para A - Declined
+PUT {{LeadManagementApi_HostAddress}}/api/leads/cd5deffa-6fa4-480b-9b34-5da446d0776f
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status": "Accepted"
+}
+
+### PUT para D - Declined
+PUT {{LeadManagementApi_HostAddress}}/api/leads/6e992026-af71-4724-ad51-009c0fb1e489/decline
+Content-Type: application/json
+Accept: application/json
+
+{
+
+  "id": "6e992026-af71-4724-ad51-009c0fb1e489",
+  "contactFirstName": "DANIEL 456",
+  "dateCreated": "2025-06-11T18:13:21.9259633",
+  "suburb": "CIDADE NOVA",
+  "category": "ESTUDANTE",
+  "description": "TESTE COM O DANIEL",
+  "price": 2.5,
+  "status": "Declined",
+  "contactFullName": null,
+  "contactPhoneNumber": null,
+  "contactEmail": null
+}
+
+
+
+
+
 ### DELETE um Lead (substitua o GUID pelo ID de um Lead existente)
 DELETE {{LeadManagementApi_HostAddress}}/api/leads/3fe03f3b-08d6-48d4-904a-d9d62c95ffe5
 Accept: */*

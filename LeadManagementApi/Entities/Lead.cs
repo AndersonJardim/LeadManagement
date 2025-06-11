@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace LeadManagementApi.Entities
 {
     public class Lead
@@ -14,5 +9,11 @@ namespace LeadManagementApi.Entities
         public string Category { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
+
+        // Novos campos para o desafio
+        public string Status { get; set; } = "Invited"; // Invited, Accepted, Declined
+        public string? ContactFullName { get; set; } // Nullable, preenchido ao aceitar
+        public string? ContactPhoneNumber { get; set; } // Nullable, preenchido ao aceitar
+        public string? ContactEmail { get; set; } // Nullable, preenchido ao aceitar
     }
 }

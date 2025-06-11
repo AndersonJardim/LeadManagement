@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using LeadManagementApi.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +23,10 @@ namespace LeadManagementApi.Data
                 entity.Property(e => e.Category).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Description).HasMaxLength(500);
                 entity.Property(e => e.Price).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.Status).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.ContactFullName).HasMaxLength(200);
+                entity.Property(e => e.ContactPhoneNumber).HasMaxLength(50);
+                entity.Property(e => e.ContactEmail).HasMaxLength(100);
             });
         }
     }

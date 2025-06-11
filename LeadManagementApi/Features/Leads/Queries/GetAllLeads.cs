@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using LeadManagementApi.Data;
 using LeadManagementApi.Models;
 using MediatR;
@@ -32,7 +27,11 @@ namespace LeadManagementApi.Features.Leads.Queries
                                        Suburb = lead.Suburb,
                                        Category = lead.Category,
                                        Description = lead.Description,
-                                       Price = lead.Price
+                                       Price = lead.Price,
+                                       Status = lead.Status,
+                                       ContactFullName = lead.ContactFullName,
+                                       ContactPhoneNumber = lead.ContactPhoneNumber,
+                                       ContactEmail = lead.ContactEmail
                                    })
                                    .ToListAsync(cancellationToken);
         }

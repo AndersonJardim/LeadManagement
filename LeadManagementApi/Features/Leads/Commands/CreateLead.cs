@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using LeadManagementApi.Data;
 using LeadManagementApi.Entities;
 using LeadManagementApi.Models;
@@ -31,7 +26,8 @@ namespace LeadManagementApi.Features.Leads.Commands
                 Suburb = request.Suburb,
                 Category = request.Category,
                 Description = request.Description,
-                Price = request.Price
+                Price = request.Price,
+                Status = "Invited" // Status padrão para novos leads
             };
 
             _context.Leads.Add(lead);
@@ -45,7 +41,8 @@ namespace LeadManagementApi.Features.Leads.Commands
                 Suburb = lead.Suburb,
                 Category = lead.Category,
                 Description = lead.Description,
-                Price = lead.Price
+                Price = lead.Price,
+                Status = lead.Status
             };
         }
     }

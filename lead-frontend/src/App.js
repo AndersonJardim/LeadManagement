@@ -1,6 +1,7 @@
+// App.js
 import React, { useState, useEffect } from 'react';
 
-const API_BASE_URL = 'https://localhost:7080/api/leads';
+const API_BASE_URL = 'https://localhost:7080/api/leads'; // Ajustado para HTTP ou HTTPS (com S)
 
 function App() {
   const [leads, setLeads] = useState([]);
@@ -171,7 +172,32 @@ function App() {
     }
   };
 
-  const LeadCard = ({ lead, isAccepted = false, onEdit, onDelete }) => {
+  const handleAcceptDecline = async (id, action) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API_BASE_URL}/${id}/${action}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, Details: ${errorText}`);
+      }
+      fetchLeads(); // Recarrega os leads para refletir a mudança de status
+    } catch (err) {
+      console.error(`Error ${action}ing lead:`, err);
+      setError(`Erro ao ${action === 'accept' ? 'aceitar' : 'recusar'} o lead: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const LeadCard = ({ lead, isAccepted = false, onEdit, onDelete, onAccept, onDecline }) => {
     const avatarLetter = lead.contactFirstName ? lead.contactFirstName.charAt(0).toUpperCase() : '?';
     const avatarColor = lead.id.endsWith('1') ? '#ff9800' : lead.id.endsWith('2') ? '#ff7043' : '#a0a0a0';
 
@@ -228,17 +254,17 @@ function App() {
         </p>
 
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
-          {!isAccepted && (
+          {!isAccepted && (lead.status === "Invited") && ( // Só mostra botões de Accept/Decline se o status for Invited
             <div className="flex w-full md:w-auto gap-2">
               <button
                 className="flex-grow md:flex-grow-0 px-4 py-2 rounded-md text-base cursor-pointer transition-colors duration-300 text-white bg-orange-500 border border-orange-500 hover:bg-orange-600 hover:border-orange-600"
-                onClick={() => alert(`Accept Lead ${lead.contactFirstName}`)}
+                onClick={() => onAccept(lead.id)}
               >
                 Accept
               </button>
               <button
                 className="flex-grow md:flex-grow-0 px-4 py-2 rounded-md text-base cursor-pointer transition-colors duration-300 bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200 hover:border-gray-400"
-                onClick={() => alert(`Decline Lead ${lead.contactFirstName}`)}
+                onClick={() => onDecline(lead.id)}
               >
                 Decline
               </button>
@@ -378,15 +404,17 @@ function App() {
         <div className="p-5">
           {activeTab === 'invited' && (
             <div>
-              {leads.length === 0 && !loading && !error ? (
+              {leads.filter(l => l.status === "Invited").length === 0 && !loading && !error ? (
                 <p className="text-center text-gray-500">Nenhum lead convidado encontrado. Crie um novo!</p>
               ) : (
-                leads.map((lead) => (
+                leads.filter(l => l.status === "Invited").map((lead) => (
                   <LeadCard
                     key={lead.id}
                     lead={lead}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
+                    onAccept={handleAcceptDecline}
+                    onDecline={handleAcceptDecline}
                   />
                 ))
               )}
@@ -395,6 +423,22 @@ function App() {
 
           {activeTab === 'accepted' && (
             <div>
+              {leads.filter(l => l.status === "Accepted").length === 0 && !loading && !error ? (
+                 <p className="text-center text-gray-500">Nenhum lead aceito encontrado.</p>
+              ) : (
+                leads.filter(l => l.status === "Accepted").map((lead) => (
+                  <LeadCard
+                    key={lead.id}
+                    lead={lead}
+                    isAccepted={true}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onAccept={handleAcceptDecline} // Ações ainda disponíveis se o status mudar
+                    onDecline={handleAcceptDecline}
+                  />
+                ))
+              )}
+              {/* Cards hardcoded para visualização conforme o template original */}
               {acceptedLeads.map((lead) => (
                 <LeadCard
                   key={lead.id}

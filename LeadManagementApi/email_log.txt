@@ -1,0 +1,5 @@
+Simulated Email to: sales@test.com
+Subject: Lead Accepted: Anderson Jardim (test 1 category 1)
+Message: Lead Anderson Jardim from teste 1 suburb 1 has been accepted. New price: $0,00. Contact: 0412345678, sales@test.com
+---End of Email---
+
