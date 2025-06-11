@@ -1,0 +1,11 @@
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Opcional: Fonte Inter */
+html, body, #root {
+  font-family: 'Inter', sans-serif;
+  height: 100%;
+  margin: 0;
+}
