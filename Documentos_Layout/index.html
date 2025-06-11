@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Invitations</title>
+    <!-- Inclui a fonte Roboto do Google Fonts para um visual moderno e limpo -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos gerais para o corpo da página */
+        body {
+            font-family: 'Roboto', sans-serif;
+            /* Define a fonte principal */
+            background-color: #f0f2f5;
+            /* Cor de fundo suave */
+            display: flex;
+            /* Usa flexbox para centralizar o conteúdo */
+            justify-content: center;
+            /* Centraliza horizontalmente */
+            padding: 20px;
+            /* Preenchimento em torno do container principal */
+            margin: 0;
+            /* Remove margens padrão do corpo */
+            min-height: 100vh;
+            /* Garante que o corpo ocupa toda a altura da viewport */
+            box-sizing: border-box;
+            /* Inclui padding e borda na largura e altura total */
+        }
+
+        /* Container principal da aplicação */
+        .container {
+            background-color: #ffffff;
+            /* Fundo branco para o container */
+            border-radius: 8px;
+            /* Cantos arredondados */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            /* Sombra para profundidade */
+            width: 100%;
+            /* Ocupa 100% da largura disponível */
+            max-width: 700px;
+            /* Largura máxima para desktops */
+            overflow: hidden;
+            /* Garante que os cantos arredondados sejam respeitados */
+            box-sizing: border-box;
+        }
+
+        /* Estilos para as abas (Invited/Accepted) */
+        .tabs {
+            display: flex;
+            /* Permite que as abas fiquem lado a lado */
+            border-bottom: 1px solid #e0e0e0;
+            /* Linha divisória na parte inferior */
+        }
+
+        .tab {
+            flex: 1;
+            /* Cada aba ocupa espaço igual */
+            padding: 15px 0;
+            /* Preenchimento superior e inferior */
+            text-align: center;
+            /* Texto centralizado */
+            font-weight: 500;
+            /* Peso da fonte */
+            color: #616161;
+            /* Cor do texto padrão da aba */
+            cursor: pointer;
+            /* Indica que é clicável */
+            position: relative;
+            /* Para posicionar a linha laranja inferior */
+            transition: color 0.3s ease;
+            /* Transição suave na cor do texto */
+        }
+
+        .tab.active {
+            color: #ff7f00;
+            /* Cor laranja para a aba ativa */
+        }
+
+        .tab.active::after {
+            content: '';
+            /* Elemento pseudo para a linha inferior laranja */
+            position: absolute;
+            bottom: -1px;
+            /* Alinha com a borda inferior das abas */
+            left: 0;
+            width: 100%;
+            /* Ocupa toda a largura da aba */
+            height: 3px;
+            /* Espessura da linha */
+            background-color: #ff7f00;
+            /* Cor laranja */
+        }
+
+        /* Lista de cartões de convite */
+        .card-list {
+            padding: 20px;
+            /* Preenchimento interno para os cartões */
+        }
+
+        /* Estilos individuais para cada cartão de convite */
+        .card {
+            background-color: #ffffff;
+            /* Fundo branco */
+            border: 1px solid #e0e0e0;
+            /* Borda leve */
+            border-radius: 8px;
+            /* Cantos arredondados */
+            margin-bottom: 20px;
+            /* Espaçamento entre os cartões */
+            padding: 20px;
+            /* Preenchimento interno */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+            /* Sombra suave */
+        }
+
+        /* Cabeçalho do cartão (avatar e informações do usuário) */
+        .card-header {
+            display: flex;
+            /* Alinha avatar e texto */
+            align-items: center;
+            /* Centraliza verticalmente */
+            margin-bottom: 15px;
+            /* Espaçamento abaixo do cabeçalho */
+        }
+
+        /* Estilo do avatar */
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            /* Torna-o circular */
+            background-color: #ff9800;
+            /* Cor de fundo do avatar */
+            color: #ffffff;
+            /* Cor do texto no avatar */
+            display: flex;
+            /* Para centralizar a letra */
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 500;
+            margin-right: 15px;
+            /* Espaçamento à direita do avatar */
+            flex-shrink: 0;
+            /* Impede que o avatar encolha */
+        }
+
+        /* Informações do usuário no cabeçalho */
+        .user-info h3 {
+            margin: 0;
+            /* Remove margens padrão */
+            font-size: 18px;
+            color: #333333;
+        }
+
+        .user-info p {
+            margin: 0;
+            /* Remove margens padrão */
+            font-size: 14px;
+            color: #757575;
+        }
+
+        /* Detalhes do trabalho (localização, tipo de trabalho, ID) */
+        .job-details {
+            display: flex;
+            /* Alinha os detalhes lado a lado */
+            flex-wrap: wrap;
+            /* Quebra para a próxima linha em telas menores */
+            align-items: center;
+            margin-bottom: 15px;
+            color: #757575;
+            font-size: 15px;
+        }
+
+        .job-details svg {
+            margin-right: 8px;
+            /* Espaçamento à direita dos ícones SVG */
+            color: #9e9e9e;
+            /* Cor dos ícones */
+            flex-shrink: 0;
+        }
+
+        .job-details span {
+            margin-right: 20px;
+            /* Espaçamento entre os itens de detalhe */
+            display: flex;
+            /* Alinha o ícone e o texto dentro do span */
+            align-items: center;
+            margin-bottom: 5px;
+            /* Espaçamento inferior para envolver elementos */
+        }
+
+        /* Detalhes de contacto (telefone e email) */
+        .contact-details {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            color: #757575;
+            font-size: 15px;
+        }
+
+        .contact-details span {
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .contact-details svg {
+            margin-right: 8px;
+            color: #9e9e9e;
+            flex-shrink: 0;
+        }
+
+        /* Descrição do trabalho */
+        .job-description {
+            font-size: 15px;
+            color: #424242;
+            line-height: 1.5;
+            /* Espaçamento entre linhas */
+            margin-bottom: 20px;
+            /* Espaçamento abaixo da descrição */
+        }
+
+        /* Ações do cartão (botões e preço da lead) */
+        .card-actions {
+            display: flex;
+            /* Alinha botões e preço */
+            flex-direction: column;
+            /* Coloca os itens em coluna por padrão */
+            align-items: flex-start;
+            /* Alinha os itens à esquerda */
+            gap: 15px;
+            /* Espaçamento entre os itens */
+        }
+
+        /* Grupo de botões */
+        .button-group {
+            display: flex;
+            /* Alinha os botões "Accept" e "Decline" */
+            width: 100%;
+            /* Ocupa a largura total disponível */
+            gap: 10px;
+            /* Espaçamento entre os botões */
+        }
+
+        /* Estilo base para todos os botões */
+        .button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            /* Transições suaves */
+            text-decoration: none;
+            /* Remove sublinhado para links */
+            text-align: center;
+            flex-grow: 1;
+            /* Permite que os botões cresçam para ocupar o espaço disponível */
+        }
+
+        /* Botão 'Accept' */
+        .button.accept {
+            background-color: #ff7f00;
+            color: #ffffff;
+            border: 1px solid #ff7f00;
+        }
+
+        .button.accept:hover {
+            background-color: #e67300;
+            border-color: #e67300;
+        }
+
+        /* Botão 'Decline' */
+        .button.decline {
+            background-color: #f5f5f5;
+            color: #616161;
+            border: 1px solid #e0e0e0;
+        }
+
+        .button.decline:hover {
+            background-color: #eeeeee;
+            border-color: #c7c7c7;
+        }
+
+        /* Preço da lead invitation */
+        .lead-invitation {
+            font-size: 17px;
+            font-weight: 500;
+            color: #333333;
+            width: 100%;
+            /* Garante que ocupe a largura total */
+            text-align: left;
+            /* Alinha o texto à esquerda */
+        }
+
+        /* Ícones SVG para localização, tipo de trabalho, telefone e email */
+        .icon-location,
+        .icon-briefcase,
+        .icon-phone,
+        .icon-mail {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            /* Usa a cor do texto pai */
+        }
+
+        /* Media Queries para responsividade */
+        @media (min-width: 600px) {
+            .card-actions {
+                flex-direction: row;
+                /* Volta para linha em telas maiores */
+                justify-content: space-between;
+                /* Espaçamento entre os elementos */
+                align-items: center;
+            }
+
+            .button-group {
+                width: auto;
+                /* Permite que o grupo de botões tenha largura automática */
+                flex-grow: 0;
+                /* Não cresce desnecessariamente */
+            }
+
+            .lead-invitation {
+                text-align: right;
+                /* Alinha o texto à direita em telas maiores */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Tab section -->
+        <div class="tabs">
+            <div class="tab active" id="invitedTab">Invited</div>
+            <div class="tab" id="acceptedTab">Accepted</div>
+        </div>
+        <!-- Card list for job invitations -->
+        <div class="card-list">
+            <!-- Invited Content -->
+            <div id="invitedContent">
+                <!-- First job invitation card (Bill) - Invited Tab -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="avatar">B</div>
+                        <div class="user-info">
+                            <h3>Bill</h3>
+                            <p>January 4 @ 2:37 pm</p>
+                        </div>
+                    </div>
+                    <div class="job-details">
+                        <span>
+                            <!-- Location icon (SVG) -->
+                            <svg class="icon-location" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2c-4.419 0-8 3.582-8 8a8.078 8.078 0 0 0 2.828 5.922L12 22l5.172-6.078A8.078 8.078 0 0 0 20 10c0-4.418-3.581-8-8-8zm0 11.5c-1.933 0-3.5-1.567-3.5-3.5s1.567-3.5 3.5-3.5 3.5 1.567 3.5 3.5-1.567 3.5-3.5 3.5z" />
+                            </svg>
+                            Yanderra 2574
+                        </span>
+                        <span>
+                            <!-- Briefcase icon (SVG) -->
+                            <svg class="icon-briefcase" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 6h-4V4c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v2H4c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2zm-6-2h-4v2h4V4zm6 15H4V8h16v11z" />
+                            </svg>
+                            Painters
+                        </span>
+                        <span>Job ID: 5577421</span>
+                    </div>
+                    <p class="job-description">
+                        Need to paint 2 aluminum windows and a sliding glass door
+                    </p>
+                    <div class="card-actions">
+                        <div class="button-group">
+                            <button class="button accept">Accept</button>
+                            <button class="button decline">Decline</button>
+                        </div>
+                        <div class="lead-invitation">
+                            $62.00 Lead Invitation
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second job invitation card (Craig) - Invited Tab -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="avatar" style="background-color: #ff7043;">C</div>
+                        <div class="user-info">
+                            <h3>Craig</h3>
+                            <p>January 4 @ 1:15 pm</p>
+                        </div>
+                    </div>
+                    <div class="job-details">
+                        <span>
+                            <svg class="icon-location" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2c-4.419 0-8 3.582-8 8a8.078 8.078 0 0 0 2.828 5.922L12 22l5.172-6.078A8.078 8.078 0 0 0 20 10c0-4.418-3.581-8-8-8zm0 11.5c-1.933 0-3.5-1.567-3.5-3.5s1.567-3.5 3.5-3.5 3.5 1.567 3.5 3.5-1.567 3.5-3.5 3.5z" />
+                            </svg>
+                            Woolooware 2230
+                        </span>
+                        <span>
+                            <svg class="icon-briefcase" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 6h-4V4c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v2H4c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2zm-6-2h-4v2h4V4zm6 15H4V8h16v11z" />
+                            </svg>
+                            Interior Painters
+                        </span>
+                        <span>Job ID: 5588872</span>
+                    </div>
+                    <p class="job-description">
+                        internal walls 3 colours
+                    </p>
+                    <div class="card-actions">
+                        <div class="button-group">
+                            <button class="button accept">Accept</button>
+                            <button class="button decline">Decline</button>
+                        </div>
+                        <div class="lead-invitation">
+                            $49.00 Lead Invitation
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accepted Content - Initially hidden -->
+            <div id="acceptedContent" style="display: none;">
+                <!-- First job invitation card (Pete) - Accepted Tab -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="avatar">P</div>
+                        <div class="user-info">
+                            <h3>Pete</h3>
+                            <p>September 5 2018 @ 10:36 am</p>
+                        </div>
+                    </div>
+                    <div class="job-details">
+                        <span>
+                            <svg class="icon-location" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2c-4.419 0-8 3.582-8 8a8.078 8.078 0 0 0 2.828 5.922L12 22l5.172-6.078A8.078 8.078 0 0 0 20 10c0-4.418-3.581-8-8-8zm0 11.5c-1.933 0-3.5-1.567-3.5-3.5s1.567-3.5 3.5-3.5 3.5 1.567 3.5 3.5-1.567 3.5-3.5 3.5z" />
+                            </svg>
+                            Carramar 6031
+                        </span>
+                        <span>
+                            <svg class="icon-briefcase" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 6h-4V4c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v2H4c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2zm-6-2h-4v2h4V4zm6 15H4V8h16v11z" />
+                            </svg>
+                            General Building Work
+                        </span>
+                        <span>Job ID: 5141895</span>
+                    </div>
+                    <div class="contact-details">
+                        <span>
+                            <svg class="icon-phone" viewBox="0 0 24 24">
+                                <path
+                                    d="M6.62 10.79a15.018 15.018 0 0 0 6.59 6.59l2.21-2.21a.996.996 0 0 1 1.05-.22c1.37.45 2.81.69 4.29.69.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-1.27 0-2.5-.23-3.65-.68-1.56-.6-3.08-1.59-4.4-2.91-1.32-1.32-2.31-2.84-2.91-4.4-1.15-2.47-1.15-5.32 0-7.79.45-1.17.69-2.39.69-3.65 0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 1.48.24 2.92.69 4.29z" />
+                            </svg>
+                            0412345678
+                        </span>
+                        <span>
+                            <svg class="icon-mail" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                            </svg>
+                            fake@mailinator.com
+                        </span>
+                    </div>
+                    <p class="job-description">
+                        Plaster exposed brick walls (see photos), square off 2 archways (see photos), and expand pantry
+                        (see photos).
+                    </p>
+                    <div class="lead-invitation">
+                        $26.00 Lead Invitation
+                    </div>
+                </div>
+
+                <!-- Second job invitation card (Chris Sanderson) - Accepted Tab -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="avatar" style="background-color: #ff7043;">C</div>
+                        <div class="user-info">
+                            <h3>Chris Sanderson</h3>
+                            <p>August 30 2018 @ 11:14 am</p>
+                        </div>
+                    </div>
+                    <div class="job-details">
+                        <span>
+                            <svg class="icon-location" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2c-4.419 0-8 3.582-8 8a8.078 8.078 0 0 0 2.828 5.922L12 22l5.172-6.078A8.078 8.078 0 0 0 20 10c0-4.418-3.581-8-8-8zm0 11.5c-1.933 0-3.5-1.567-3.5-3.5s1.567-3.5 3.5-3.5 3.5 1.567 3.5 3.5-1.567 3.5-3.5 3.5z" />
+                            </svg>
+                            Quinns Rocks 6030
+                        </span>
+                        <span>
+                            <svg class="icon-briefcase" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 6h-4V4c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v2H4c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2zm-6-2h-4v2h4V4zm6 15H4V8h16v11z" />
+                            </svg>
+                            Home Renovations
+                        </span>
+                        <span>Job ID: 5121931</span>
+                    </div>
+                    <div class="contact-details">
+                        <span>
+                            <svg class="icon-phone" viewBox="0 0 24 24">
+                                <path
+                                    d="M6.62 10.79a15.018 15.018 0 0 0 6.59 6.59l2.21-2.21a.996.996 0 0 1 1.05-.22c1.37.45 2.81.69 4.29.69.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-1.27 0-2.5-.23-3.65-.68-1.56-.6-3.08-1.59-4.4-2.91-1.32-1.32-2.31-2.84-2.91-4.4-1.15-2.47-1.15-5.32 0-7.79.45-1.17.69-2.39.69-3.65 0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 1.48.24 2.92.69 4.29z" />
+                            </svg>
+                            04987654321
+                        </span>
+                        <span>
+                            <svg class="icon-mail" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                            </svg>
+                            another.fake@hipmail.com
+                        </span>
+                    </div>
+                    <p class="job-description">
+                        There is a two story building at the front of the main house that's about 10x5 that would like
+                        to convert into self contained living area.
+                    </p>
+                    <div class="lead-invitation">
+                        $32.00 Lead Invitation
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get references to the tab elements and content sections
+        const invitedTab = document.getElementById('invitedTab');
+        const acceptedTab = document.getElementById('acceptedTab');
+        const invitedContent = document.getElementById('invitedContent');
+        const acceptedContent = document.getElementById('acceptedContent');
+
+        // Function to show content for a given tab
+        function showTabContent(tabId) {
+            // Remove 'active' class from all tabs
+            invitedTab.classList.remove('active');
+            acceptedTab.classList.remove('active');
+
+            // Hide all content sections
+            invitedContent.style.display = 'none';
+            acceptedContent.style.display = 'none';
+
+            // Add 'active' class to the clicked tab and show its content
+            if (tabId === 'invited') {
+                invitedTab.classList.add('active');
+                invitedContent.style.display = 'block';
+            } else if (tabId === 'accepted') {
+                acceptedTab.classList.add('active');
+                acceptedContent.style.display = 'block';
+            }
+        }
+
+        // Add event listeners to the tabs
+        invitedTab.addEventListener('click', () => showTabContent('invited'));
+        acceptedTab.addEventListener('click', () => showTabContent('accepted'));
+
+        // Initially show the 'Invited' tab content
+        document.addEventListener('DOMContentLoaded', () => {
+            showTabContent('invited');
+        });
+    </script>
+</body>
+
+</html>
