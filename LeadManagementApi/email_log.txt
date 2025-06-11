@@ -3,3 +3,13 @@ Subject: Lead Accepted: Anderson Jardim (test 1 category 1)
 Message: Lead Anderson Jardim from teste 1 suburb 1 has been accepted. New price: $0,00. Contact: 0412345678, sales@test.com
 ---End of Email---
 
+Simulated Email to: sales@test.com
+Subject: Lead Accepted: teste4 (teste4)
+Message: Lead teste4 from teste4 has been accepted. New price: $444,00. Contact: 0412345678, sales@test.com
+---End of Email---
+
+Simulated Email to: sales@test.com
+Subject: Lead Accepted: teste3 (teste3)
+Message: Lead teste3 from teste3 has been accepted. New price: $33,00. Contact: 0412345678, sales@test.com
+---End of Email---
+

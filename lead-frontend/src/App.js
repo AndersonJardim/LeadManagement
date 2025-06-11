@@ -18,54 +18,6 @@ function App() {
   });
   const [editingLeadId, setEditingLeadId] = useState(null);
 
-  // Dados fixos para a aba 'Invited'
-  const invitedLeads = [
-    {
-      id: 'invited-1',
-      contactFirstName: 'Bill',
-      dateCreated: '2023-01-04T14:37:00Z',
-      suburb: 'Yanderra 2574',
-      category: 'Painters',
-      description: 'Need to paint 2 aluminum windows and a sliding glass door',
-      price: 62.00,
-    },
-    {
-      id: 'invited-2',
-      contactFirstName: 'Craig',
-      dateCreated: '2023-01-04T13:15:00Z',
-      suburb: 'Woolooware 2230',
-      category: 'Interior Painters',
-      description: 'internal walls 3 colours',
-      price: 49.00,
-    },
-  ];
-
-  // Dados fixos para a aba 'Accepted', baseados no seu template
-  const acceptedLeads = [
-    {
-      id: 'accepted-1',
-      contactFirstName: 'Pete',
-      dateCreated: '2018-09-05T10:36:00Z',
-      suburb: 'Carramar 6031',
-      category: 'General Building Work',
-      description: 'Plaster exposed brick walls (see photos), square off 2 archways (see photos), and expand pantry (see photos).',
-      price: 26.00,
-      contactPhoneNumber: '0412345678',
-      contactEmail: 'fake@mailinator.com',
-    },
-    {
-      id: 'accepted-2',
-      contactFirstName: 'Chris',
-      dateCreated: '2018-08-30T11:14:00Z',
-      suburb: 'Quinns Rocks 6030',
-      category: 'Home Renovations',
-      description: 'There is a two story building at the front of the main house that\'s about 10x5 that would like to convert into self contained living area.',
-      price: 32.00,
-      contactPhoneNumber: '04987654321',
-      contactEmail: 'another.fake@hipmail.com',
-    },
-  ];
-
   useEffect(() => {
     fetchLeads();
   }, []);
@@ -187,7 +139,7 @@ function App() {
         const errorText = await response.text();
         throw new Error(`HTTP error! status: ${response.status}, Details: ${errorText}`);
       }
-      fetchLeads(); // Recarrega os leads para refletir a mudança de status
+      fetchLeads();
     } catch (err) {
       console.error(`Error ${action}ing lead:`, err);
       setError(`Erro ao ${action === 'accept' ? 'aceitar' : 'recusar'} o lead: ${err.message}`);
@@ -254,17 +206,17 @@ function App() {
         </p>
 
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
-          {!isAccepted && (lead.status === "Invited") && ( // Só mostra botões de Accept/Decline se o status for Invited
+          {!isAccepted && (lead.status === "Invited") && (
             <div className="flex w-full md:w-auto gap-2">
               <button
                 className="flex-grow md:flex-grow-0 px-4 py-2 rounded-md text-base cursor-pointer transition-colors duration-300 text-white bg-orange-500 border border-orange-500 hover:bg-orange-600 hover:border-orange-600"
-                onClick={() => onAccept(lead.id)}
+                onClick={() => onAccept(lead.id, 'accept')}
               >
                 Accept
               </button>
               <button
                 className="flex-grow md:flex-grow-0 px-4 py-2 rounded-md text-base cursor-pointer transition-colors duration-300 bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200 hover:border-gray-400"
-                onClick={() => onDecline(lead.id)}
+                onClick={() => onDecline(lead.id, 'decline')}
               >
                 Decline
               </button>
@@ -375,13 +327,12 @@ function App() {
           </form>
         </div>
 
-        {/* Mensagens de estado */}
         {loading && activeTab === 'invited' && (
           <p className="text-center text-lg text-indigo-600 font-medium mb-4">Carregando leads...</p>
         )}
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md relative mb-4 mx-6" role="alert">
-            <strong className="font-bold">Erro!</strong>
+            <strong>Erro!</strong>
             <span className="block sm:inline ml-2">{error}</span>
           </div>
         )}
@@ -433,19 +384,11 @@ function App() {
                     isAccepted={true}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
-                    onAccept={handleAcceptDecline} // Ações ainda disponíveis se o status mudar
+                    onAccept={handleAcceptDecline}
                     onDecline={handleAcceptDecline}
                   />
                 ))
               )}
-              {/* Cards hardcoded para visualização conforme o template original */}
-              {acceptedLeads.map((lead) => (
-                <LeadCard
-                  key={lead.id}
-                  lead={lead}
-                  isAccepted={true}
-                />
-              ))}
             </div>
           )}
         </div>
